@@ -9,7 +9,32 @@ An ultra-low latency (**~0.01s**) quantitative trading engine and real-time dash
 
 Unlike traditional trading bots that require complex broker REST API registrations, OAuth tokens, or webhooks, this tool uses **Direct Inter-Process Communication (IPC)** to read live tick data and market structures straight from the active MT5 terminal memory running on your desktop.
 
-![Dashboard Preview](https://via.placeholder.com/1000x500/0F172A/38BDF8?text=MT5+Terminal+Analyzer+Pro+Dashboard)
+## 🏗️ Architecture & Workflow
+
+```mermaid
+graph TD
+    subgraph Windows["User Desktop (Windows OS)"]
+        MT5["MT5 Terminal (Live Memory & Tick Data)"]
+        
+        subgraph Engine["Quantitative Engine Pro"]
+            IPC["Python IPC Bridge (MetaTrader5)"]
+            Calc["Vectorized NumPy & Pandas Matrices"]
+            Server["Local HTTP Server (server.py Port 8000)"]
+        end
+
+        UI["Web Dashboard & CLI Interface"]
+        Dossier["Quantitative Contract Dossier (.md)"]
+    end
+
+    AI["Large Language Models (Claude / GPT-4 / Gemini)"]
+
+    MT5 <== Direct IPC (~0.01s) ==> IPC
+    IPC --> Calc
+    Calc --> Server
+    Server <--> UI
+    Calc --> Dossier
+    Dossier -. Ready-to-Paste Prompt .-> AI
+```
 
 ---
 
