@@ -1,6 +1,0 @@
-{
-    "account_id": "101-123-456789-001",
-    "api_token": "abc123xyz_example_token_do_not_use_actual_token_here",
-    "environment": "fxpractice",
-    "notes": "environment bisa berisi fxpractice (untuk demo account) atau fxlive (untuk real trade account)"
-}

@@ -13,20 +13,7 @@ if exist "C:\Program Files\MetaTrader 5\terminal64.exe" (
 
 echo [*] Menjalankan server lokal dan membuka browser...
 
-if exist "%LOCALAPPDATA%\Programs\Python\Python313\python.exe" (
-    "%LOCALAPPDATA%\Programs\Python\Python313\python.exe" server.py
-    goto :end
-)
-if exist "%USERPROFILE%\AppData\Local\Programs\Python\Python313\python.exe" (
-    "%USERPROFILE%\AppData\Local\Programs\Python\Python313\python.exe" server.py
-    goto :end
-)
-where py >nul 2>nul
-if not errorlevel 1 (
-    py server.py
-    goto :end
-)
-python server.py
+python server.py 2>nul || py server.py
 
 :end
 echo.
