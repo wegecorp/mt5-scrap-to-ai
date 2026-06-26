@@ -12,14 +12,23 @@ if exist "C:\Program Files\MetaTrader 5\terminal64.exe" (
 )
 
 echo [*] Menjalankan server lokal dan membuka browser...
-if exist "C:\Windows\py.exe" (
-    py server.py
-) else if exist "C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python313\python.exe" (
-    "C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python313\python.exe" server.py
-) else (
-    python server.py
-)
 
+if exist "%LOCALAPPDATA%\Programs\Python\Python313\python.exe" (
+    "%LOCALAPPDATA%\Programs\Python\Python313\python.exe" server.py
+    goto :end
+)
+if exist "%USERPROFILE%\AppData\Local\Programs\Python\Python313\python.exe" (
+    "%USERPROFILE%\AppData\Local\Programs\Python\Python313\python.exe" server.py
+    goto :end
+)
+where py >nul 2>nul
+if not errorlevel 1 (
+    py server.py
+    goto :end
+)
+python server.py
+
+:end
 echo.
-echo [!] Server berhenti atau terjadi error.
+echo [!] Server berhenti atau keluar.
 pause
