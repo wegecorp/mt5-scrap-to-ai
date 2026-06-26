@@ -1,0 +1,27 @@
+# Virtual Environment & Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.env
+.env*
+
+# Local Credentials & Broker Configs
+.oanda_config
+oanda_config.json
+
+# Generated Reports, Logs & Archives
+reports/
+*.log
+analysis_*.txt
+!requirements.txt
+scratch/
+trading.zip
+
+# System & IDE
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MT5 Terminal Analyzer Pro - Expo Design System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Expo Hero Gradient Wash -->
+    <div class="expo-sky-wash"></div>
+
+    <header class="expo-header">
+        <div class="header-inner">
+            <div class="brand-group">
+                <div class="expo-logo-mark">MT5</div>
+                <div>
+                    <h1>Terminal Analyzer <span class="badge-pill">PRO</span></h1>
+                    <p class="subtitle">Direct Terminal Sync · Zero API</p>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot"></span> Terminal Connected
+            </div>
+        </div>
+    </header>
+
+    <main class="expo-main-container">
+        <!-- Sidebar Controls & History -->
+        <aside class="sidebar">
+            <div class="expo-card control-card">
+                <h2>Parameters</h2>
+                <form id="analyzeForm">
+                    <div class="form-group">
+                        <label for="symbolInput">MT5 Symbol <small style="font-weight:normal;color:var(--slate);">(Cari / Ketik)</small></label>
+                        <input type="text" id="symbolInput" list="symbolList" name="symbol" value="XAUUSDm" placeholder="Ketik cari pair e.g. XAUUSDm..." required autocomplete="off">
+                        <datalist id="symbolList"></datalist>
+                        <div class="quick-tags" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
+                            <button type="button" class="tag-btn" data-sym="XAUUSDm">XAUUSDm</button>
+                            <button type="button" class="tag-btn" data-sym="EURUSDm">EURUSDm</button>
+                            <button type="button" class="tag-btn" data-sym="GBPUSDm">GBPUSDm</button>
+                            <button type="button" class="tag-btn" data-sym="USDJPYm">USDJPYm</button>
+                            <button type="button" class="tag-btn" data-sym="BTCUSDm">BTCUSDm</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="timeframeSelect">Timeframe</label>
+                        <select id="timeframeSelect" name="timeframe">
+                            <option value="1m">1 Minute (M1)</option>
+                            <option value="5m">5 Minutes (M5)</option>
+                            <option value="15m">15 Minutes (M15)</option>
+                            <option value="30m">30 Minutes (M30)</option>
+                            <option value="1h" selected>1 Hour (H1)</option>
+                            <option value="4h">4 Hours (H4)</option>
+                            <option value="1d">Daily (D1)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="expo-btn-primary" id="analyzeBtn">
+                        <span class="btn-text">Run Analysis</span>
+                        <div class="spinner" id="analyzeSpinner"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="expo-card history-card">
+                <div class="history-header">
+                    <h2>Recent Reports</h2>
+                    <button class="btn-link" id="refreshHistoryBtn">Refresh</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="muted-text">Loading history...</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Display Content -->
+        <section class="content-area">
+            <!-- Empty State -->
+            <div class="expo-card empty-state" id="emptyState">
+                <span class="caption-uppercase">READY TO SYNC</span>
+                <h2>Select a symbol to run live analysis</h2>
+                <p>Extract real-time OHLCV tick data and calculate 8 technical indicators directly from your MetaTrader 5 terminal memory.</p>
+                <div class="feature-tags">
+                    <span class="badge-pill">EMA Confluence</span>
+                    <span class="badge-pill">RSI (14) Momentum</span>
+                    <span class="badge-pill">MACD Indicator</span>
+                    <span class="badge-pill">Bollinger Bands & ATR</span>
+                </div>
+            </div>
+
+            <!-- Analysis Live View -->
+            <div class="analysis-view hidden" id="analysisContent">
+                <!-- Hero Signal Band -->
+                <div class="expo-card hero-signal-card">
+                    <div class="hero-top">
+                        <div class="symbol-title">
+                            <h2 id="displaySymbol">XAUUSDm</h2>
+                            <span class="badge-pill font-mono" id="displayTimeframe">1h</span>
+                            <span class="badge-pill source font-mono" id="displaySource">Live Sync</span>
+                        </div>
+                        <div class="meta-right">
+                            <span class="broker-str font-mono" id="displayBrokerInfo">Exness Real</span>
+                            <span class="timestamp font-mono" id="displayTimestamp">Update: 18:30:00</span>
+                        </div>
+                    </div>
+
+                    <div class="signal-row">
+                        <div class="signal-col">
+                            <span class="caption-uppercase">CONFLUENCE SIGNAL</span>
+                            <div class="display-mega" id="displaySignal">BUY</div>
+                        </div>
+
+                        <div class="confidence-col">
+                            <span class="caption-uppercase">CONFIDENCE SCORE</span>
+                            <div class="conf-num font-mono" id="displayConfidence">85%</div>
+                            <div class="progress-track">
+                                <div class="progress-fill" id="confidenceFill"></div>
+                            </div>
+                        </div>
+
+                        <div class="price-col">
+                            <span class="caption-uppercase">CURRENT TICK PRICE</span>
+                            <div class="price-val-row">
+                                <span class="price-mega font-mono" id="metricPrice">$2,345.50</span>
+                                <span class="chg-tag font-mono" id="metricChange">+0.45%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Indicator Cards Grid -->
+                <div class="metrics-grid">
+                    <!-- Card 1: Price Stats -->
+                    <div class="expo-card metric-card">
+                        <h3 class="card-title">Price & Volatility Stats</h3>
+                        <div class="metric-rows font-mono">
+                            <div class="row"><span>High:</span> <b id="metricHigh">$2,350.00</b></div>
+                            <div class="row"><span>Low:</span> <b id="metricLow">$2,330.00</b></div>
+                            <div class="row"><span>Tick Volume:</span> <b id="metricVolume">1,245</b></div>
+                            <div class="row strong"><span>ATR Volatility:</span> <b id="metricATR">4.25</b></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Trend Direction -->
+                    <div class="expo-card metric-card">
+                        <h3 class="card-title">Trend Direction (EMA)</h3>
+                        <div class="trend-val" id="metricTrend">UPTREND</div>
+                        <div class="metric-rows font-mono">
+                            <div class="row"><span>EMA 20:</span> <b id="metricEMA20">2340.15</b></div>
+                            <div class="row"><span>EMA 50:</span> <b id="metricEMA50">2335.20</b></div>
+                            <div class="row"><span>Position:</span> <b id="metricEMAPos">Above EMA20</b></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Momentum RSI -->
+                    <div class="expo-card metric-card">
+                        <h3 class="card-title">Momentum RSI (14)</h3>
+                        <div class="rsi-header">
+                            <span class="rsi-num font-mono" id="metricRSI">58.4</span>
+                            <span class="badge-pill" id="metricRSIStatus">Neutral</span>
+                        </div>
+                        <div class="rsi-track">
+                            <div class="rsi-thumb" id="rsiThumb"></div>
+                        </div>
+                        <div class="rsi-labels font-mono">
+                            <span>Oversold</span>
+                            <span>50</span>
+                            <span>Overbought</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: MACD & Bollinger Bands -->
+                    <div class="expo-card metric-card">
+                        <h3 class="card-title">MACD & Bollinger Bands</h3>
+                        <div class="metric-rows font-mono">
+                            <div class="row"><span>MACD / Sig:</span> <b><span id="metricMACD">1.25</span> / <span id="metricMACDSig">0.85</span></b></div>
+                            <div class="row"><span>MACD Hist:</span> <b id="metricMACDHist">+0.40</b></div>
+                            <div class="row"><span>BB Upper:</span> <b id="metricBBUpper">2355.00</b></div>
+                            <div class="row"><span>BB Lower:</span> <b id="metricBBLower">2325.00</b></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Broker Specs & Costs -->
+                    <div class="expo-card metric-card">
+                        <h3 class="card-title">Broker Specs & Costs</h3>
+                        <div class="metric-rows font-mono">
+                            <div class="row"><span>Live Spread:</span> <b id="metricSpread">0 pts</b></div>
+                            <div class="row"><span>Swap Long:</span> <b id="metricSwapLong">0.0</b></div>
+                            <div class="row"><span>Swap Short:</span> <b id="metricSwapShort">0.0</b></div>
+                            <div class="row"><span>Point Size:</span> <b id="metricPoint">0.01</b></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Market Structure & HTF Trend -->
+                    <div class="expo-card metric-card">
+                        <h3 class="card-title">Structure & HTF Trend</h3>
+                        <div class="trend-val" style="font-size: 0.85rem; line-height: 1.3; margin: 6px 0;" id="metricHTFTrend">H4: Bullish | D1: Bullish</div>
+                        <div class="metric-rows font-mono">
+                            <div class="row"><span>Key Support:</span> <b id="metricSupport">$2,330.00</b></div>
+                            <div class="row"><span>Key Resistance:</span> <b id="metricResistance">$2,350.00</b></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 7: Market Environment & Candlestick Patterns -->
+                    <div class="expo-card metric-card">
+                        <h3 class="card-title">Environment & Patterns</h3>
+                        <div class="trend-val" style="font-size: 0.85rem; line-height: 1.3; margin: 6px 0; color: var(--indigo);" id="metricSession">London / NY Session</div>
+                        <div class="metric-rows font-mono">
+                            <div class="row"><span>Patterns (15m):</span> <b id="metricPatterns">Normal Price Action</b></div>
+                            <div class="row"><span>Server Time:</span> <b id="metricServerTime">--:--:--</b></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 8: Daily Pivot Points (Standard) -->
+                    <div class="expo-card metric-card">
+                        <h3 class="card-title">Daily Pivots (Standard D1)</h3>
+                        <div class="metric-rows font-mono">
+                            <div class="row"><span>Pivot (PP):</span> <b id="metricPP">$0.00</b></div>
+                            <div class="row"><span>R1 / R2:</span> <b><span id="metricR1">0</span> / <span id="metricR2">0</span></b></div>
+                            <div class="row"><span>S1 / S2:</span> <b><span id="metricS1">0</span> / <span id="metricS2">0</span></b></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giant Black CTA Band (Expo Signature) -->
+                <div class="expo-cta-band">
+                    <div class="cta-info">
+                        <h3>Unified AI Prompt Contract (.md) Ready</h3>
+                        <p>Pre-formatted Quantitative Trading Dossier containing live MT5 pricing, candlestick table, MTF status, and personalized AI strategy tasks.</p>
+                        <div class="saved-notice">
+                            📁 Saved dossier file: <b class="font-mono" id="savedFilePath">reports/...</b>
+                        </div>
+                    </div>
+                    <button class="expo-btn-primary-giant" style="min-width: 300px;" id="copyPromptBtn">
+                        📋 Copy Complete MD Dossier & Prompt
+                    </button>
+                </div>
+
+                <!-- Code Previews (Expo Surface Dark) -->
+                <div class="previews-section">
+                    <details class="expo-dark-card" open>
+                        <summary>Inspect Complete Quantitative Dossier & AI Contract (.md)</summary>
+                        <textarea class="dark-textarea font-mono" id="promptTextPreview" readonly rows="15">Loading...</textarea>
+                    </details>
+                    <textarea id="reportTextPreview" style="display:none;"></textarea>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toastNotification">
+        <span id="toastMessage">Copied to clipboard</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
